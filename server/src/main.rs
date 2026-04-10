@@ -50,7 +50,7 @@ async fn api_get_employees(
     .await
     {
         Ok(employees) => Json(ApiResponse::success(employees)),
-        Err(e)        => Json(ApiResponse::error(e.to_string())),
+        Err(e)        => Json(ApiResponse::<Vec<Employee>>::error(e.to_string())),
     }
 }
 
@@ -73,7 +73,7 @@ async fn api_update_employee(
     .await
     {
         Ok(_)  => Json(ApiResponse::success(emp)),
-        Err(e) => Json(ApiResponse::error(e.to_string())),
+        Err(e) => Json(ApiResponse::<Employee>::error(e.to_string())),
     }
 }
 
@@ -95,7 +95,7 @@ async fn api_create_employee(
     .await
     {
         Ok(created) => Json(ApiResponse::success(created)),
-        Err(e)      => Json(ApiResponse::error(e.to_string())),
+        Err(e)      => Json(ApiResponse::<Employee>::error(e.to_string())),
     }
 }
 
@@ -109,7 +109,7 @@ async fn api_delete_employee(
         .await
     {
         Ok(_)  => Json(ApiResponse::success(())),
-        Err(e) => Json(ApiResponse::error(e.to_string())),
+        Err(e) => Json(ApiResponse::<()>::error(e.to_string())),
     }
 }
 

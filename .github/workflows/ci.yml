@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: rustapp
+          POSTGRES_PASSWORD: rustapp123
+          POSTGRES_DB: rustappdb
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://rustapp:rustapp123@127.0.0.1:5432/rustappdb
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust nightly + WASM target
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Create DB schema
+        run: |
+          sudo apt-get install -y postgresql-client
+          psql $DATABASE_URL -c "
+            CREATE TABLE IF NOT EXISTS employees (
+              id         SERIAL PRIMARY KEY,
+              name       VARCHAR(100) NOT NULL,
+              department VARCHAR(50)  NOT NULL,
+              role       VARCHAR(100) NOT NULL,
+              salary     INTEGER      NOT NULL,
+              active     BOOLEAN      NOT NULL DEFAULT true
+            );"
+
+      - name: Install cargo-leptos
+        run: cargo install cargo-leptos --locked
+
+      - name: Build
+        run: cargo leptos build --release
