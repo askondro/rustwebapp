@@ -1,0 +1,19 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE employees SET name=$1, department=$2, role=$3, salary=$4, active=$5 WHERE id=$6",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Varchar",
+        "Varchar",
+        "Varchar",
+        "Int4",
+        "Bool",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "3518ead086e0dc832e04ac222062524865c384d29e77bffa99d7bcfff4a8decd"
+}
