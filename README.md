@@ -79,3 +79,4 @@ shared crate
 2. Register: `.route("/api/new", get(my_handler))`
 3. If it returns data — add the type to `shared/src/lib.rs`
 # rustwebapp
+# rustwebapp
