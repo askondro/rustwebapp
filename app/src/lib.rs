@@ -1,3 +1,4 @@
+#![allow(unused_variables)]
 #![recursion_limit = "512"]
 //! app/src/lib.rs
 //!
@@ -30,7 +31,7 @@ use leptos_router::{
 // Types from our own `shared` crate — compiled into both this WASM binary
 // and the server binary. Using the same Rust types on both sides means the
 // JSON shape can never drift between client and server.
-use shared::{CounterState, Employee};
+use shared::{ApiResponse, CounterState, Employee};
 
 // `JsCast` is a wasm_bindgen trait that provides `dyn_into` and
 // `unchecked_ref` — used to cast generic JS objects to specific types.
@@ -139,7 +140,7 @@ pub fn App() -> impl IntoView {
     // `clock` holds the current time as a formatted string "HH:MM:SS".
     // It starts empty — on the server it stays empty (no `set_interval`).
     // On the client the Effect below sets up a 1-second browser timer.
-    let (clock, _set_clock) = signal(String::new());
+    let (clock, set_clock) = signal(String::new());
 
     Effect::new(move |_| {
         // This entire block is compiled out in the SSR build.
@@ -507,8 +508,8 @@ fn DataPage() -> impl IntoView {
     // Rows start empty — fetched from the server on mount.
     let rows = RwSignal::new(Vec::<Employee>::new());
     // Loading and error state for the initial fetch
-    let (loading, _set_loading) = signal(true);
-    let (fetch_error, _set_fetch_error) = signal(Option::<String>::None);
+    let (loading, set_loading) = signal(true);
+    let (fetch_error, set_fetch_error) = signal(Option::<String>::None);
 
     // Fetch employees from the server when the component mounts.
     Effect::new(move |_| {
@@ -644,7 +645,7 @@ fn DataPage() -> impl IntoView {
 
     // Called when user saves a new employee from the Add dialog.
     // The server assigns the real ID; we re-fetch the full list after.
-    let on_add_save = Callback::new(move |_new_emp: Employee| {
+    let on_add_save = Callback::new(move |new_emp: Employee| {
         set_adding.set(false);
         #[cfg(target_arch = "wasm32")]
         leptos::task::spawn_local(async move {
