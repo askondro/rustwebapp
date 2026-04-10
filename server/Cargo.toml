@@ -1,0 +1,22 @@
+[package]
+name    = "server"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+ssr = ["app/ssr"]
+
+[dependencies]
+shared      = { path = "../shared" }
+app         = { path = "../app" }
+leptos      = { workspace = true }
+leptos_axum = { workspace = true }
+leptos_meta = { version = "0.7" }
+axum        = { workspace = true }
+tokio       = { workspace = true }
+serde       = { workspace = true }
+tower-http  = { version = "0.5", features = ["fs", "compression-gzip"] }
+
+# Database
+sqlx        = { version = "0.8", features = ["postgres", "runtime-tokio", "macros"] }
+dotenvy     = "0.15"   # reads .env file for DATABASE_URL

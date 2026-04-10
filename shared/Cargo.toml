@@ -1,0 +1,12 @@
+[package]
+name    = "shared"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serde = { workspace = true }
+
+# sqlx FromRow — only needed on the server side.
+# The feature is optional so the WASM build doesn't pull in sqlx.
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+sqlx = { version = "0.8", features = ["postgres", "derive"], default-features = false }
